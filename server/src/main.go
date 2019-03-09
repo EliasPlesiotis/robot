@@ -17,7 +17,7 @@ import (
 
 
 var (
-	c = Commands{&Command{0, "forward", 3}}
+	c Commands
 	current_id = 3
 	channel = make(chan bool)
 	available = false
@@ -90,9 +90,6 @@ func insider() {
 
 func main() {
 	fmt.Println(users.CreateUser())
-
-	c = append(c, &Command{1, "backward", 3})
-	c = append(c, &Command{2, "forward", 3})
 
 	r := mux.NewRouter()
 
