@@ -39,18 +39,22 @@ def stop():
 def forward(n):
     #pi.forward(90)
     time.sleep(n)
+    #pi.stop()
 
 def backward(n):
     #pi.backward(90)
     time.sleep(n)
+    #pi.stop()
 
 def left(n):
     #pi.spinLeft(90)
     time.sleep(n)
+    #pi.stop()
 
 def right(n):
     #pi.spinRight(90)
     time.sleep(n)
+    #pi.stop()
     
 
 def main():
