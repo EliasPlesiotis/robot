@@ -25,7 +25,7 @@ type Command struct {
 
 //	Slice of commands
 /////////////////////////////////////
-type Commands []*Command
+type Commands []Command
 
 func (c *Commands) CreateCommand(r *http.Request) {
 	params = mux.Vars(r)
@@ -34,7 +34,7 @@ func (c *Commands) CreateCommand(r *http.Request) {
 	dir := params["Dir"][1:len(params["Dir"])-1]
 	speed, _ := strconv.Atoi(params["Speed"][1:len(params["Speed"])-1])
 	com := Command{Id: current_id, Dir: dir, Duration: dur, Speed: speed}
-	(*c) = append((*c), &com)
+	(*c) = append((*c), com)
 }
 
 func (c *Commands) DeleteCommand(r *http.Request) {

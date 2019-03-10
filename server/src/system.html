@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="static/style.css">
+    <script src="static/system.js"></script>
+</head>
+<body>
+    <a class="nav" href="/">home</a>
+    <div class="files" ng-app="side" ng-controller="ctrl">
+        <div class="create">
+            <h1>Save your program as </h1>
+            <input type="text" ng-model="name">
+            <button type="submit" ng-click="save()">create</button>
+            <p ng-hide="saved==true">Saved</p>
+        </div>
+        <div class="load">
+            <h1>Or load another </h1>
+            {{ range $index, $item := .Files }}
+                <button class="btn" type="submit" ng-click="load('{{$item.Name}}')">{{$item.Name}}</button>
+            {{ end }}
+            <p ng-hide="loaded==true">Loaded</p>
+        </div>
+    </div>
+</body>

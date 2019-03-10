@@ -27,14 +27,13 @@ func folder(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		err = models.CreateFile(r, &c)
 	} else if r.Method == "GET" {
-		err = models.GetFile(r, &c)
-		
+		err = models.LoadFile(r, &c)
 	} else if r.Method == "DELETE" {
 		err = models.DeleteFile(r)
 	}
-	
+
 	if err != nil {
-		log.Fatal("run again with sudo")
+		log.Print(err)
 	}
 }
 
@@ -50,9 +49,23 @@ func command(w http.ResponseWriter, r *http.Request) {
 func index(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles("index.html")
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 	t.Execute(w, nil)
+}
+
+func system(w http.ResponseWriter, r *http.Request) {
+	t, err := template.ParseFiles("system.html")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	files, err := models.ReadFiles()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	t.Execute(w, struct{Files []models.File}{files})
 }
 
 
@@ -65,6 +78,7 @@ func main() {
 	r.HandleFunc("/command/{Id}+{Dir}+{Duration}+{Speed}", command).Methods("POST", "DELETE")
 	r.HandleFunc("/files", files).Methods("GET")
 	r.HandleFunc("/folder/{Name}", folder).Methods("GET", "POST", "DELETE")
+	r.HandleFunc("/system", system).Methods("GET")
 
 	http.Handle("/", r)
 

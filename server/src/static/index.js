@@ -13,7 +13,7 @@ side.controller("ctrl", function($scope, $http) {
 
   $http({
     method: "POST",
-    url: "http://127.0.0.1:5000/connect"
+    url: "http://192.168.1.25:5000/connect"
   })
 
   $scope.move = (m) => {
@@ -25,7 +25,7 @@ side.controller("ctrl", function($scope, $http) {
       return
     }
 
-    $http({ method : "POST", url : "http://localhost:8080/command/{0}+{"+ m +"}+{"+ $scope.duration +"}+{90}"})
+    $http({ method : "POST", url : "http://localhost:8080/command/{0}+{"+ m +"}+{"+ $scope.duration +"}+{"+ $scope.speed +"}"})
     $http({
       method: "GET",
       url: "http://localhost:8080/files"
@@ -54,14 +54,14 @@ side.controller("ctrl", function($scope, $http) {
   $scope.start = () => {
     $http({
       method: "POST",
-      url: "http://127.0.0.1:5000/start"
+      url: "http://192.168.1.25:5000/start"
     })
   }
 
   $scope.stop = () => {
     $http({
       method: "POST",
-      url: "http://127.0.0.1:5000/stop"
+      url: "http://192.168.1.25:5000/stop"
     })
   }
 

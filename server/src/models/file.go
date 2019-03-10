@@ -11,15 +11,18 @@ import (
 
 type File struct {
 	Name string `json:Name`
+	Url  string `json:Url`
 }
 
 func CreateFile(r *http.Request, c *Commands) error {
 	var err error
+	
+	os.Chdir("../files")
+	defer os.Chdir("../src")
 
 	params := mux.Vars(r)
-	if _, err := os.Open(params["Name"] + ".json"); err == nil {
-		err = os.Remove(params["Name"] + ".json")
-		return err
+	if err := os.Remove(params["Name"] + ".json"); err != nil {
+		
 	}
 
 	f, err := os.Create(params["Name"] + ".json")
@@ -33,11 +36,14 @@ func CreateFile(r *http.Request, c *Commands) error {
 	return err
 }
 
-func GetFile(r *http.Request, c *Commands) error {
+func LoadFile(r *http.Request, c *Commands) error {
 	var err error 
 
+	os.Chdir("../files")
+	defer os.Chdir("../src")
+
 	params := mux.Vars(r)
-	f, err := os.Open(params["Name"] + ".json")
+	f, err := os.Open(params["Name"][1:len(params["Name"])-1])
 	if err != nil {
 		return err
 	}
@@ -47,11 +53,10 @@ func GetFile(r *http.Request, c *Commands) error {
 	if err != nil {
 		return err
 	}
-
-	err = json.Unmarshal(bytes, &c)
+	
+	err = json.Unmarshal(bytes, c)
 
 	return err
-
 }
 
 
@@ -59,7 +64,28 @@ func DeleteFile(r *http.Request) error {
 	var err error
 
 	params := mux.Vars(r)
-	err = os.Remove(params["Name"] + ".json")
+	err = os.Remove(params["Name"][1:len(params["Name"])-1])
 
 	return err
+}
+
+
+func ReadFiles() ([]File, error) {
+	var files []File
+	f, err := os.Open("../files")
+	if err != nil {
+		return files, err
+	}
+
+	fileInfo, err := f.Readdir(-1)
+	f.Close()
+	if err != nil {
+		return files, err
+	}
+   
+   	for _, file := range fileInfo {
+		files = append(files, File{file.Name(), "/folder/{" + file.Name() + "}"})
+	}
+
+	return files, nil
 }

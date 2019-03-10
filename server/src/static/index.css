@@ -73,7 +73,7 @@ body {
     background-color: rgb(241, 201, 201);
     top: 80%;
     left: 50%;
-    width: 40%;
+    width: 50%;
     height: 50%;
     overflow: scroll;
     border-radius: 5px;
@@ -101,10 +101,10 @@ body {
 }
 
 .duration {
-    position: absolute;
+    position: relative;
     top: 20%;
     left: 10%;
     padding: 10px;
     font-size: 150%;
-    width: 5%;
+    width: 10%;
 }
