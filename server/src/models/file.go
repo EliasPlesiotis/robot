@@ -9,21 +9,38 @@ import (
 	"github.com/gorilla/mux"
 )
 
+
+var location string = "EliasPlesiotis"
+
 type File struct {
 	Name string `json:Name`
 	Url  string `json:Url`
 }
 
+func GenerateLocation(username string) error {
+	var err error
+
+	os.Chdir("../")
+	defer os.Chdir("src")
+
+	err = os.Mkdir(username, 666)
+	location = username
+
+	return err
+}
+
+func UseLocation(username string) {
+	location = username
+}
+
 func CreateFile(r *http.Request, c *Commands) error {
 	var err error
 	
-	os.Chdir("../files")
+	os.Chdir("../"+ location)
 	defer os.Chdir("../src")
 
 	params := mux.Vars(r)
-	if err := os.Remove(params["Name"] + ".json"); err != nil {
-		
-	}
+	if err := os.Remove(params["Name"] + ".json"); err != nil {}
 
 	f, err := os.Create(params["Name"] + ".json")
 	if err != nil {
@@ -39,7 +56,7 @@ func CreateFile(r *http.Request, c *Commands) error {
 func LoadFile(r *http.Request, c *Commands) error {
 	var err error 
 
-	os.Chdir("../files")
+	os.Chdir("../"+ location)
 	defer os.Chdir("../src")
 
 	params := mux.Vars(r)
@@ -63,6 +80,9 @@ func LoadFile(r *http.Request, c *Commands) error {
 func DeleteFile(r *http.Request) error {
 	var err error
 
+	os.Chdir("../"+ location)
+	defer os.Chdir("../src")
+
 	params := mux.Vars(r)
 	err = os.Remove(params["Name"][1:len(params["Name"])-1])
 
@@ -72,7 +92,7 @@ func DeleteFile(r *http.Request) error {
 
 func ReadFiles() ([]File, error) {
 	var files []File
-	f, err := os.Open("../files")
+	f, err := os.Open("../"+ location)
 	if err != nil {
 		return files, err
 	}

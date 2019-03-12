@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <div class="cont">
+        <form action="/register" method="POST">
+            <label for="uname">Username</label><br>
+            <input type="text" name="uname" id="uname"><br>
+            <label for="email">Email</label><br>
+            <input type="text" name="Email" id="Email"><br>
+            <label for="password">Password</label><br>
+            <input type="password" name="password" id="password"><br>
+            <input type="submit" value="Submit"/>
+        </form>
+            <a href="/login">Login here</a>
+        </div>
+        <style>
+                .cont {
+                    font-family: Arial;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    display: block;
+                    transform: translate(-50%, -50%);
+                    padding: 5% 2%;
+                    border:  solid;
+                    box-shadow: 2px;
+                    padding: 10%;
+                }
+    
+                #uname, #password, #Email {
+                    padding: 6%;
+                    margin: 15% 0%;
+                }
+            </style>
+    </body>
+</html>

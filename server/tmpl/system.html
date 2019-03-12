@@ -15,9 +15,11 @@
         </div>
         <div class="load">
             <h1>Or load another </h1>
-            {{ range $index, $item := .Files }}
-                <button class="btn" type="submit" ng-click="load('{{$item.Name}}')">{{$item.Name}}</button>
-            {{ end }}
+            <ul>
+                <li ng-repeat="file in files">
+                    <button ng-click="load(file.Name)">{{"{{"}} file.Name {{"}}"}}</button><button ng-click="delete(file.Name)">X</button>
+                </li>
+            </ul>
             <p ng-hide="loaded==true">Loaded</p>
         </div>
     </div>

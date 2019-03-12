@@ -36,23 +36,23 @@ def stop():
         return 'hello world'
 
 
-def forward(n):
-    #pi.forward(90)
+def forward(n, speed):
+    #pi.forward(speed)
     time.sleep(n)
     #pi.stop()
 
-def backward(n):
-    #pi.backward(90)
+def backward(n, speed):
+    #pi.backward(speed)
     time.sleep(n)
     #pi.stop()
 
-def left(n):
-    #pi.spinLeft(90)
+def left(n, speed):
+    #pi.spinLeft(speed)
     time.sleep(n)
     #pi.stop()
 
-def right(n):
-    #pi.spinRight(90)
+def right(n, speed):
+    #pi.spinRight(speed)
     time.sleep(n)
     #pi.stop()
     
@@ -62,16 +62,16 @@ def main():
 
     for move in moves:
         if move['Dir'] == 'forward':
-            forward(move['Duration'])
+            forward(move['Duration'], move['Speed'])
             
         if move['Dir'] == 'backward':
-            backward(move['Duration'])
+            backward(move['Duration'], move['Speed'])
             
         if move['Dir'] == 'right':
-            right(move['Duration'])
+            right(move['Duration'], move['Speed'])
 
         if move['Dir'] == 'left':
-            left(move['Duration'])
+            left(move['Duration'], move['Speed'])
             
         print(move)
 
