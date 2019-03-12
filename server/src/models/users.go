@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	key64 = []byte("WXXgBI2Zj5/RCrk8CLmuNPKJ09VP9deXfG3CGoimz5dM9KaNZUnWofK1IAdEdiqbNGApKsW2m/xxkZR5yWXLWw==")
-	key32 = []byte("Bpah7x5S6/GdwQ1UP2c5tg+2Pgt9vNovZ/bFjjIxLUE=")
+	key64 = securecookie.GenerateRandomKey(64)
+	key32 = securecookie.GenerateRandomKey(32)
 	cookie = securecookie.New(key64, key32)
 )
 
@@ -23,7 +23,40 @@ type User struct {
 	Email string
 }
 
+func (u User) SaveUser() error {
+	var users []User
+	
+	err := LoadUsers(&users)
+	if err != nil {
+		return err
+	}
+
+	if err = os.Remove("users.json"); err != nil {}
+	f, err := os.Create("users.json")
+
+	users = append(users, u)
+
+	err = json.NewEncoder(f).Encode(users)
+	
+	return err
+}
 //////////////////////////////////////////
+
+func LoadUsers(u *[]User) error {
+	f, err := os.Open("users.json")
+	if err != nil {
+		_, err := os.Create("users.json")
+		if err != nil {
+			return err
+		}
+	}
+	defer f.Close()
+
+	b, err := ioutil.ReadAll(f)
+	err = json.Unmarshal(b, u)
+	
+	return err
+}
 
 func WriteCred() error {	
 	f, err := os.Open("credentials.json")
@@ -48,7 +81,7 @@ func WriteCred() error {
 	
 	var keys [][]byte
 
-	err = json.Unmarshal(bytes, keys)
+	err = json.Unmarshal(bytes, &keys)
 
 	cookie = securecookie.New(keys[0], keys[1])
 
@@ -67,17 +100,18 @@ func CreateSession(u *User, w http.ResponseWriter) {
 	}
 }
 
-func GetUsername(r *http.Request) string {
+func GetNamePassword(r string) (string, string) {
 	var username string
+	var password string
 	
-	if c, err := r.Cookie("session"); err == nil {
-		value := make(map[string]string)
-		if err := cookie.Decode("session", c.Value, &value); err == nil {
-			username = value["name"]  
-		}
-	}	
+	value := make(map[string]string)
+	if err := cookie.Decode("session", r, &value); err == nil {
+		username = value["name"]  
+		password = value["password"]
+	}
+		
 	
-	return username
+	return username, password
 }
 
 func ClearSession(w http.ResponseWriter) {

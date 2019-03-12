@@ -69,12 +69,12 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func system(w http.ResponseWriter, r *http.Request) {
-	_, err := r.Cookie("session")
+	c, err := r.Cookie("session")
 	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 
-	username := models.GetUsername(r)
+	username, _ := models.GetNamePassword(c.Value)
 	models.UseLocation(username)
 
 	t, err := template.ParseFiles("../tmpl/system.html")
@@ -98,6 +98,11 @@ func login(w http.ResponseWriter, r *http.Request) {
 		username := r.FormValue("uname")
 		password := r.FormValue("password")
 
+		err := models.LoadUsers(&u)
+		if err != nil {
+			log.Print(err)
+		}
+
 		for _, user := range u {
 			if username == user.Username && password == user.Password {
 				models.CreateSession(&user, w)
@@ -120,8 +125,20 @@ func register(w http.ResponseWriter, r *http.Request) {
 		username := r.FormValue("uname")
 		email := r.FormValue("email")
 		password := r.FormValue("password")
+
+		for _, user := range u {
+			if username == user.Username {
+				http.Error(w, "User already exists", http.StatusInternalServerError)
+				return
+			}
+		}
+
 		user := models.User{Username: username, Email: email, Password: password}
-		u = append(u, user)
+		
+		err := user.SaveUser()
+		if err != nil {
+			log.Print(err)
+		}
 
 		models.CreateSession(&user, w)
 		models.GenerateLocation(username)
@@ -152,7 +169,10 @@ func main() {
 
 	http.Handle("/", r)
 	
-	//fmt.Println(models.WriteCred())
+	fmt.Println(models.WriteCred())
+	err := models.LoadUsers(&u)
+	log.Print(err)
+	
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
