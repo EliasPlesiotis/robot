@@ -23,17 +23,42 @@ def conn():
 def start():
     print(request)
     if request.method == 'POST':
-        threading._start_new_thread(main, ())
+        threading._start_new_thread(blocks, ())
         print('runing')
         return 'hello world'
+
+@app.route("/controller/<dir>+<speed>", methods=['POST'])
+def controller(dir, speed):
+    if dir == 'forward':
+        #pi.forward(speed)
+        pass
+    elif dir == 'backward':
+        #pi.reverse(speed)
+        pass
+    elif dir == 'left':
+        #pi.spinLeft(speed)
+        pass
+    elif dir == 'backward':
+        #pi.spinRight(speed)
+        pass
+    elif dir == 'stop':
+        #pi.stop()
+        pass
 
 @app.route("/stop", methods=['POST'])
 def stop():
     print(request)
     if request.method == 'POST':
+        #pi.stop()
         #pi.cleanup()
-        threading._start_new_thread(exit, ())
+        #pi.init()
         return 'hello world'
+
+@app.route("/code", methods=['GET'])
+def code():
+    threading._start_new_thread(python, ())
+    print('runing')
+    return 'hello world'
 
 
 def forward(n, speed):
@@ -57,8 +82,8 @@ def right(n, speed):
     #pi.stop()
     
 
-def main():
-    moves = json.loads(requests.get('http://localhost:8080/files').text)
+def blocks():
+    moves = json.loads(requests.get('http://192.168.1.25:8080/files').text)
 
     for move in moves:
         if move['Dir'] == 'forward':
@@ -75,8 +100,12 @@ def main():
             
         print(move)
 
+def python():
+    source = json.loads(requests.get('http://192.168.1.25:8080/view'))
+    compiled = compile(source)
+    exec(compiled)
 
 if __name__ == '__main__':
     #pi.init()
 
-    app.run()
+    app.run(host='0.0.0.0')

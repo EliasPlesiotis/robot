@@ -16,6 +16,7 @@ import (
 var (
 	c models.Commands
 	u []models.User
+	src string
 )
 
 func files(w http.ResponseWriter, r *http.Request) {
@@ -31,6 +32,9 @@ func folder(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		if params["Name"] != "{all}" {	
 			err = models.LoadFile(r, &c)
+			if err != nil {
+				fmt.Fprint(w, http.StatusNotFound)
+			}
 		} else {
 			f, err := models.ReadFiles()
 			if err != nil {
@@ -109,6 +113,16 @@ func login(w http.ResponseWriter, r *http.Request) {
 				http.Redirect(w, r, "/", http.StatusSeeOther)
 			}
 		}
+	} else if r.Method == "DELETE" {
+		for i, user := range u {
+			c, _ := r.Cookie("session")
+			username, password := models.GetNamePassword(c.Value)
+			if username == user.Username && password == user.Password {
+				u = append(u[:i], u[i+1:]...)
+				models.ClearSession(w)
+				models.DeleteLocation(username)
+			}
+		}
 	}
 }
 
@@ -145,12 +159,45 @@ func register(w http.ResponseWriter, r *http.Request) {
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
-
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
 	models.ClearSession(w)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
+func controller(w http.ResponseWriter, r *http.Request) {
+	_, err := r.Cookie("session")
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	}
+
+	t, err := template.ParseFiles("../tmpl/controller.html")
+	if err != nil {
+		panic(err)
+	}
+	t.Execute(w, nil)
+}
+
+func code(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		t, err := template.ParseFiles("../tmpl/code.html")
+		if err != nil {
+			panic(err)
+		}
+		t.Execute(w, nil)
+	} else if r.Method == "POST" {
+		src = r.FormValue("code")
+		fmt.Println(src)
+		http.Redirect(w, r, "/code", http.StatusSeeOther)
+	}
+}
+
+func view(w http.ResponseWriter, r *http.Request) {
+	err := json.NewEncoder(w).Encode(src)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func main() {
@@ -163,8 +210,11 @@ func main() {
 	r.HandleFunc("/files", files).Methods("GET")
 	r.HandleFunc("/folder/{Name}", folder).Methods("GET", "POST", "DELETE")
 	r.HandleFunc("/system", system).Methods("GET")
-	r.HandleFunc("/login", login).Methods("GET", "POST")
+	r.HandleFunc("/login", login).Methods("GET", "POST", "DELETE")
 	r.HandleFunc("/register", register).Methods("GET", "POST")
+	r.HandleFunc("/controller", controller).Methods("GET", "POST")
+	r.HandleFunc("/code", code).Methods("GET", "POST")
+	r.HandleFunc("/view", view).Methods("GET")
 	r.HandleFunc("/logout", logout)
 
 	http.Handle("/", r)

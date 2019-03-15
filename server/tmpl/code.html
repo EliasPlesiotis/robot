@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<head> 
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="static/code.js"></script>    
+</head>
+<body>
+    <div class="asdf" ng-app="side" ng-controller="ctrl">
+        <form action="/code" method="POST">
+            <textarea name="code" cols="30" rows="10"></textarea>
+            <input type="submit" />
+        </form>
+        <input type="button" value="run" ng-click="run()">
+    </div>
+</body>

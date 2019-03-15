@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"io/ioutil"
+	"errors"
 
 	"github.com/gorilla/mux"
 )
@@ -28,6 +29,19 @@ func GenerateLocation(username string) error {
 
 	return err
 }
+
+func DeleteLocation(username string) error {
+	var err error
+
+	os.Chdir("../")
+	defer os.Chdir("src")
+
+	err = os.RemoveAll(username)
+	location = username
+
+	return err
+}
+
 
 func UseLocation(username string) {
 	location = username
@@ -56,6 +70,9 @@ func CreateFile(r *http.Request, c *Commands) error {
 func LoadFile(r *http.Request, c *Commands) error {
 	var err error 
 
+	if location == "" {
+		return errors.New("location is empty")
+	}
 	os.Chdir("../"+ location)
 	defer os.Chdir("../src")
 
