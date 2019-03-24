@@ -1,6 +1,1 @@
-cd server
-cd src
-set GOARM=6
-set GOARCH=arm
-set GOOS=linux
-go build main.go
+cd server/src && set GOARM=6 && set GOARCH=arm && set GOOS=linux && go build main.go api.go
