@@ -1,4 +1,5 @@
 from flask import Flask, redirect
+from flask_cors import CORS, cross_origin
 from flask import request
 
 import threading
@@ -10,21 +11,24 @@ import socket
 
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*", "headers": "content-type", "methods": ["POST", "GET"]}})
 
 
 @app.route("/connect", methods=['POST'])
+@cross_origin()
 def conn():
     if request.method == 'POST' :
         print('connected')
-        return 'Hello world'
+        return 'hello world'
 
 
-@app.route("/start", methods=['POST'])
-def start():
+@app.route("/start/<file>", methods=['POST'])
+@cross_origin()
+def start(file):
     print(request)
     if request.method == 'POST':
-        threading._start_new_thread(blocks, ())
-        print('runing')
+        threading._start_new_thread(blocks, (file,))
+        print('running')
         return 'hello world'
 
 @app.route("/controller/<dir>+<speed>", methods=['POST'])
@@ -44,6 +48,9 @@ def controller(dir, speed):
     elif dir == 'stop':
         #pi.stop()
         pass
+    
+    print(dir, speed)
+    return 'hello world'
 
 @app.route("/stop", methods=['POST'])
 def stop():
@@ -82,20 +89,20 @@ def right(n, speed):
     #pi.stop()
     
 
-def blocks():
-    moves = json.loads(requests.get('http://192.168.1.25:8080/files').text)
+def blocks(file):
+    moves = json.loads(requests.get('http://localhost:3000/file/{' + file + '}').text)
 
     for move in moves:
-        if move['Dir'] == 'forward':
+        if move['Diraction'] == 'forward':
             forward(move['Duration'], move['Speed'])
             
-        if move['Dir'] == 'backward':
+        if move['Diraction'] == 'backward':
             backward(move['Duration'], move['Speed'])
             
-        if move['Dir'] == 'right':
+        if move['Diraction'] == 'right':
             right(move['Duration'], move['Speed'])
 
-        if move['Dir'] == 'left':
+        if move['Diraction'] == 'left':
             left(move['Duration'], move['Speed'])
             
         print(move)
@@ -108,4 +115,4 @@ def python():
 if __name__ == '__main__':
     #pi.init()
 
-    app.run(host='0.0.0.0')
+    app.run(host='')

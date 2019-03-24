@@ -1,0 +1,8 @@
+<div class="controller">
+  <button class="forward" (click)="move('forward', speed.value)"><i class='fas fa-arrow-up'></i></button>
+  <button class="backward" (click)="move('backward', speed.value)"><i class='fas fa-arrow-down'></i></button>
+  <button class="left" (click)="move('left', speed.value)"><i class='fas fa-arrow-left'></i></button>
+  <button class="right" (click)="move('right', speed.value)"><i class='fas fa-arrow-right'></i></button>
+  <div class="speed">speed<input type="number" #speed placeholder="0" /></div>
+  <button class="btn stop" (click)="stop()" >stop</button>
+</div>

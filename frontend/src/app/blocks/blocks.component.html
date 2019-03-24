@@ -1,0 +1,29 @@
+<div class="controller">
+    <button class="forward" (click)="move('forward', speed.value, dur.value)"><i class='fas fa-arrow-up'></i></button>
+    <button class="backward" (click)="move('backward', speed.value, dur.value)"><i class='fas fa-arrow-down'></i></button>
+    <button class="left" (click)="move('left', speed.value, dur.value)"><i class='fas fa-arrow-left'></i></button>
+    <button class="right" (click)="move('right', speed.value, dur.value)"><i class='fas fa-arrow-right'></i></button>
+    <div class="duration">seconds<input type="number" #dur placeholder="0" /></div><br/>
+    <div class="speed">speed<input type="number" #speed placeholder="0" /></div>
+    <button class="btn start" (click)="start()" >start</button>
+    <button class="btn stop" (click)="stop()" >stop</button>
+</div>
+<div class="middle">
+  <ul>
+    <li *ngFor="let move of moves">
+      {{ move.Diraction }} for {{ move.Duration }} seconds with speed {{ move.Speed }} <button (click)="delete(move)">X</button>
+    </li>
+  </ul>
+</div>
+<div class="explore">
+  <h1>File {{ value }} loaded</h1>
+  <div class="files">
+    <ul>
+      <li *ngFor="let file of files">
+        <button (click)="getFile(file)">{{ file }}</button><button (click)="deleteFile(file)">X</button>
+      </li>
+    </ul>
+    <label>Save As: </label><input type="text" #name placeholder="..." [value]="value" [style.background-color]="modified ? 'red': 'white'">
+    <button (click)="save(name.value)">save</button>
+  </div>
+ </div>
