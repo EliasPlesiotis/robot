@@ -15,11 +15,11 @@ export class ControllerComponent implements OnInit {
   }
 
   move(dir: string, speed: number) {
-    this.http.post('http://192.168.1.6:5000/controller/' + dir + '+' + speed, null).subscribe((res) => {console.log(res)});
+    this.http.post('http://192.168.1.25:5000/controller/' + dir + '+' + speed, null).subscribe((res) => {console.log(res)});
   }
 
   stop() {
-    this.http.post('http://192.168.1.6:5000/stop', null).subscribe((res) => {console.log(res)});
+    this.http.post('http://192.168.1.25:5000/stop', null).subscribe((res) => {console.log(res)});
   }
 
 }

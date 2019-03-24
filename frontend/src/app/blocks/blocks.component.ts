@@ -39,7 +39,7 @@ export class BlocksComponent implements OnInit {
 
   ngOnInit() {
     this.data = this.http.get<Command[]>(
-      'http://192.168.1.6:3000/file/{new}',
+      'http://192.168.1.25:3000/file/{new}',
        httpOptions)
        .subscribe((res) => {
         this.moves = res;
@@ -47,7 +47,7 @@ export class BlocksComponent implements OnInit {
        });
 
     this.data = this.http.get<string[]>(
-      'http://192.168.1.6:3000/files',
+      'http://192.168.1.25:3000/files',
        httpOptions)
        .subscribe((res) => {
          this.files = res;
@@ -73,23 +73,23 @@ export class BlocksComponent implements OnInit {
 
   start() {
     alert('saving file ' + this.value);
-    this.http.post('http://192.168.1.6:5000/start/' + this.value, null).subscribe((res) => {console.log(res)});
+    this.http.post('http://192.168.1.25:5000/start/' + this.value, null).subscribe((res) => {console.log(res)});
     this.modified = false;
   }
 
   stop() {
-    this.http.post('http://192.168.1.6:5000/stop', null).subscribe((res) => {console.log(res)});
+    this.http.post('http://192.168.1.25:5000/stop', null).subscribe((res) => {console.log(res)});
   }
 
   save(name) {
     let c: File = {Name: name, Commands: this.moves};
     let headers = httpOptions;
     this.http.post<File>(
-      'http://192.168.1.6:3000/file/{' + name + '}', c, headers).
+      'http://192.168.1.25:3000/file/{' + name + '}', c, headers).
       subscribe((res) => {console.log(res)});
 
     this.data = this.http.get<string[]>(
-      'http://192.168.1.6:3000/files',
+      'http://192.168.1.25:3000/files',
        httpOptions)
        .subscribe((res) => {
          this.files = res;
@@ -100,7 +100,7 @@ export class BlocksComponent implements OnInit {
 
   getFile(name) {
     this.data = this.http.get<Command[]>(
-      'http://192.168.1.6:3000/file/{' + name + '}',
+      'http://192.168.1.25:3000/file/{' + name + '}',
        httpOptions)
        .subscribe((res) => {
         this.moves = res;
@@ -116,7 +116,7 @@ export class BlocksComponent implements OnInit {
   deleteFile(name) {
     alert('Are you sure')
     this.data = this.http.delete<Command[]>(
-      'http://192.168.1.6:3000/file/{' + name + '}',
+      'http://192.168.1.25:3000/file/{' + name + '}',
        httpOptions)
        .subscribe((res) => {
         this.value = name;
@@ -127,7 +127,7 @@ export class BlocksComponent implements OnInit {
     });
 
     this.data = this.http.get<string[]>(
-      'http://192.168.1.6:3000/files',
+      'http://192.168.1.25:3000/files',
        httpOptions)
        .subscribe((res) => {
          this.files = res;
